@@ -118,9 +118,9 @@
     },
     {
       "category": "Date & Time",
-      "label": "Time range",
-      "source": "Event page start and end times, sorted into ranges",
-      "keepWhole": false,
+      "label": "Start time",
+      "source": "Event page start time, sorted into a range",
+      "keepWhole": true,
       "options": [
         "8:00AM - 12:00PM EST",
         "12:00PM - 4:00PM EST",
@@ -128,12 +128,31 @@
         "8:00PM - 10:00PM EST"
       ],
       "values": [
-        "4:00PM - 8:00PM EST, 8:00PM - 10:00PM EST",
-        "4:00PM - 8:00PM EST, 8:00PM - 10:00PM EST",
-        "8:00AM - 12:00PM EST, 12:00PM - 4:00PM EST",
-        "4:00PM - 8:00PM EST, 8:00PM - 10:00PM EST",
-        "8:00AM - 12:00PM EST, 12:00PM - 4:00PM EST, 4:00PM - 8:00PM EST",
+        "4:00PM - 8:00PM EST",
+        "4:00PM - 8:00PM EST",
+        "8:00AM - 12:00PM EST",
+        "4:00PM - 8:00PM EST",
+        "8:00AM - 12:00PM EST",
         "4:00PM - 8:00PM EST"
+      ]
+    },
+    {
+      "category": "Date & Time",
+      "label": "Duration",
+      "source": "Event page start and end times (per day for multi-day events)",
+      "keepWhole": true,
+      "options": [
+        "1-2 hrs",
+        "2-4 hrs",
+        "4+ hrs"
+      ],
+      "values": [
+        "2-4 hrs",
+        "2-4 hrs",
+        "4+ hrs",
+        "1-2 hrs",
+        "4+ hrs",
+        "1-2 hrs"
       ]
     },
     {
