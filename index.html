@@ -80,6 +80,12 @@ section.cat { background: var(--surface); border: 1px solid var(--line); border-
 .ghead { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 8px 6px 2px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .ghead:first-child { padding-top: 2px; }
 .ghead .linkbtn { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 0.75rem; }
+.gtoggle { display: flex; align-items: center; gap: 7px; background: none; border: 0; padding: 2px 0; font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; text-align: left; }
+.gtoggle:hover { color: var(--fg); }
+.gcaret { width: 6px; height: 6px; flex: none; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translate(-1px, -1px); transition: transform 0.15s; }
+.gtoggle[aria-expanded="false"] .gcaret { transform: rotate(-45deg); }
+.gsel { color: var(--accent); text-transform: none; letter-spacing: 0; }
+.filters .linkbtn { margin-left: auto; }
 .empty-note { color: var(--muted); font-size: 0.8125rem; padding: 6px; }
 aside.out { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; max-height: calc(100vh - 32px); }
 @media (max-width: 900px) { aside.out { position: static; max-height: none; } }
@@ -160,7 +166,7 @@ const fieldDefs = FIELDS.map(([cat, label, source, vals, whole, fixed, groups, e
 });
 
 const STORE_KEY = "event-metadata-form-v1";
-let state = { name: "", values: {}, custom: {}, includeEmpty: false, prefill: "0" };
+let state = { name: "", values: {}, custom: {}, collapsed: {}, includeEmpty: false, prefill: "0" };
 
 function prefillFrom(i) {
   state.values = {};
@@ -302,6 +308,14 @@ function renderFilters(p) {
     b.addEventListener("click", () => { p.group = g; renderOpts(p); });
     box.append(b);
   });
+  const names = groupNames(p.f);
+  const closed = state.collapsed[p.f.id] || [];
+  const allClosed = names.every(g => closed.includes(g));
+  const t = document.createElement("button");
+  t.type = "button"; t.className = "linkbtn";
+  t.textContent = allClosed ? "Expand all" : "Collapse all";
+  t.addEventListener("click", () => { state.collapsed[p.f.id] = allClosed ? [] : [...names]; save(); renderOpts(p); });
+  box.append(t);
 }
 
 function optRow(f, o, sel, custom) {
@@ -333,9 +347,22 @@ function renderOpts(p) {
     groupNames(f).forEach(g => {
       const inGroup = list.filter(o => groupOf(f, o) === g);
       if (!inGroup.length) return;
+      // Searching opens every group so matches are never hidden.
+      const open = !!q.trim() || !(state.collapsed[f.id] || []).includes(g);
       const head = document.createElement("div");
       head.className = "ghead";
-      const name = document.createElement("span"); name.textContent = `${g} (${inGroup.length})`;
+      const name = document.createElement("button");
+      name.type = "button"; name.className = "gtoggle";
+      name.setAttribute("aria-expanded", String(open));
+      const picked = inGroup.filter(o => sel.includes(o)).length;
+      name.innerHTML = `<span class="gcaret" aria-hidden="true"></span><span></span>`;
+      name.lastChild.textContent = `${g} (${inGroup.length})`;
+      if (picked) { const b = document.createElement("span"); b.className = "gsel"; b.textContent = `${picked} selected`; name.append(b); }
+      name.addEventListener("click", () => {
+        const cur = state.collapsed[f.id] || [];
+        state.collapsed[f.id] = cur.includes(g) ? cur.filter(x => x !== g) : [...cur, g];
+        save(); renderOpts(p);
+      });
       const all = document.createElement("button");
       all.type = "button"; all.className = "linkbtn";
       const allOn = inGroup.every(o => sel.includes(o));
@@ -346,7 +373,7 @@ function renderOpts(p) {
       });
       head.append(name, all);
       box.append(head);
-      inGroup.forEach(o => box.append(optRow(f, o, sel, custom)));
+      if (open) inGroup.forEach(o => box.append(optRow(f, o, sel, custom)));
     });
   } else {
     list.forEach(o => box.append(optRow(f, o, sel, custom)));
