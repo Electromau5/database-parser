@@ -73,6 +73,13 @@ section.cat { background: var(--surface); border: 1px solid var(--line); border-
 .add { text-align: left; font: inherit; border: 1px dashed var(--accent); color: var(--accent); background: transparent; border-radius: 5px; padding: 6px 8px; cursor: pointer; }
 .panel-foot { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); padding-top: 6px; }
 .linkbtn { border: 0; background: none; font: inherit; font-size: 0.8125rem; color: var(--accent); cursor: pointer; padding: 2px 4px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.fpill { font: inherit; font-size: 0.75rem; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+.fpill:hover { border-color: var(--accent); }
+.fpill[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.ghead { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 8px 6px 2px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.ghead:first-child { padding-top: 2px; }
+.ghead .linkbtn { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 0.75rem; }
 .empty-note { color: var(--muted); font-size: 0.8125rem; padding: 6px; }
 input.name { width: 100%; background: var(--bg); }
 aside.out { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; max-height: calc(100vh - 32px); }
@@ -130,7 +137,7 @@ try {
   const data = await res.json();
   EVENTS = data.events;
   CATEGORIES = data.categories.map(c => [c.name, c.covers, c.parserUse]);
-  FIELDS = data.fields.map(f => [f.category, f.label, f.source, f.values, f.keepWhole]);
+  FIELDS = data.fields.map(f => [f.category, f.label, f.source, f.values, f.keepWhole, f.options, f.groups]);
 } catch (err) {
   document.getElementById("form").innerHTML = "<section class=\"cat\"><h2>Couldn\u2019t load the event data</h2><p class=\"rule\">The form reads data/event-metadata.json, so it has to be served over HTTP. Run <code>./serve.sh</code> in the repo and open http://localhost:8787.</p></section>";
   throw err;
@@ -140,11 +147,13 @@ try {
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const split = (v, whole) => !v ? [] : whole ? [v.trim()] : v.split(",").map(s => s.trim()).filter(Boolean);
 
-const fieldDefs = FIELDS.map(([cat, label, source, vals, whole]) => {
+const fieldDefs = FIELDS.map(([cat, label, source, vals, whole, fixed, groups]) => {
   const perEvent = vals.map(v => split(v, whole));
   const options = [];
-  perEvent.forEach(list => list.forEach(o => { if (!options.includes(o)) options.push(o); }));
-  return { id: slug(cat + "-" + label), cat, label, source, perEvent, options };
+  // A field with a fixed `options` list uses it as-is; otherwise options come from the event values.
+  if (fixed) options.push(...fixed);
+  else perEvent.forEach(list => list.forEach(o => { if (!options.includes(o)) options.push(o); }));
+  return { id: slug(cat + "-" + label), cat, label, source, perEvent, options, groups: groups || null };
 });
 
 const STORE_KEY = "event-metadata-form-v1";
@@ -244,50 +253,105 @@ function togglePanel(f, el) {
   if (same) return;
   const panel = document.createElement("div");
   panel.className = "panel";
-  panel.innerHTML = `<input type="text" id="search-${f.id}" placeholder="Search or type a new value" aria-label="Search ${f.label}"><div class="opts" role="listbox" aria-multiselectable="true"></div>
+  panel.innerHTML = `<input type="text" id="search-${f.id}" placeholder="Search or type a new value" aria-label="Search ${f.label}">${f.groups ? `<div class="filters" role="group" aria-label="Filter by category"></div>` : ""}<div class="opts" role="listbox" aria-multiselectable="true"></div>
     <div class="panel-foot"><button type="button" class="linkbtn" data-a="all">Select all</button><button type="button" class="linkbtn" data-a="none">Clear</button><button type="button" class="linkbtn" data-a="done">Done</button></div>`;
   panel.addEventListener("click", e => e.stopPropagation());
   el.append(panel);
   el.querySelector(".trigger").setAttribute("aria-expanded", "true");
-  openPanel = { f, el, panel };
+  openPanel = { f, el, panel, group: "" };
   const search = panel.querySelector("input");
   search.addEventListener("input", () => renderOpts(openPanel));
   search.addEventListener("keydown", e => {
     if (e.key === "Enter") { e.preventDefault(); addCustom(f, search.value); }
   });
-  panel.querySelector('[data-a="all"]').addEventListener("click", () => setSel(f, [...new Set([...(state.values[f.id] || []), ...visibleOpts(f, search.value)])]));
+  panel.querySelector('[data-a="all"]').addEventListener("click", () => setSel(f, [...new Set([...(state.values[f.id] || []), ...visibleOpts(f, search.value, openPanel.group)])]));
   panel.querySelector('[data-a="none"]').addEventListener("click", () => setSel(f, []));
   panel.querySelector('[data-a="done"]').addEventListener("click", () => { closePanel(); el.querySelector(".trigger").focus(); });
   renderOpts(openPanel);
   search.focus();
 }
 
-function visibleOpts(f, q) {
-  q = (q || "").trim().toLowerCase();
-  return optionsFor(f).filter(o => !q || o.toLowerCase().includes(q));
+// Options in a field with `groups` belong to the first group that lists them; anything else (custom values included) goes in "Other".
+function groupOf(f, o) {
+  for (const [g, list] of Object.entries(f.groups)) if (list.includes(o)) return g;
+  return "Other";
+}
+function groupNames(f) {
+  const names = Object.keys(f.groups);
+  if (optionsFor(f).some(o => groupOf(f, o) === "Other")) names.push("Other");
+  return names;
 }
 
-function renderOpts({ f, panel }) {
+function visibleOpts(f, q, group) {
+  q = (q || "").trim().toLowerCase();
+  return optionsFor(f).filter(o => {
+    const g = f.groups ? groupOf(f, o) : "";
+    if (group && g !== group) return false;
+    return !q || o.toLowerCase().includes(q) || g.toLowerCase().includes(q);
+  });
+}
+
+function renderFilters(p) {
+  const box = p.panel.querySelector(".filters");
+  if (!box) return;
+  box.innerHTML = "";
+  ["", ...groupNames(p.f)].forEach(g => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "fpill";
+    b.textContent = g || "All";
+    b.setAttribute("aria-pressed", String(p.group === g));
+    b.addEventListener("click", () => { p.group = g; renderOpts(p); });
+    box.append(b);
+  });
+}
+
+function optRow(f, o, sel, custom) {
+  const lab = document.createElement("label");
+  lab.className = "opt";
+  const cb = document.createElement("input");
+  cb.type = "checkbox"; cb.checked = sel.includes(o); cb.id = `opt-${f.id}-${slug(o)}`;
+  cb.addEventListener("change", () => {
+    const cur = state.values[f.id] || [];
+    setSel(f, cb.checked ? [...cur, o] : cur.filter(v => v !== o));
+  });
+  const t = document.createElement("span"); t.textContent = o;
+  lab.append(cb, t);
+  if (custom.includes(o) && !f.options.includes(o)) { const tg = document.createElement("span"); tg.className = "tag"; tg.textContent = "Custom"; lab.append(tg); }
+  return lab;
+}
+
+function renderOpts(p) {
+  const { f, panel } = p;
+  if (p.group && f.groups && !groupNames(f).includes(p.group)) p.group = "";
+  renderFilters(p);
   const q = panel.querySelector("input").value;
   const box = panel.querySelector(".opts");
   box.innerHTML = "";
   const sel = state.values[f.id] || [];
-  const list = visibleOpts(f, q);
+  const list = visibleOpts(f, q, p.group);
   const custom = state.custom[f.id] || [];
-  list.forEach((o, i) => {
-    const lab = document.createElement("label");
-    lab.className = "opt";
-    const cb = document.createElement("input");
-    cb.type = "checkbox"; cb.checked = sel.includes(o); cb.id = `opt-${f.id}-${i}`;
-    cb.addEventListener("change", () => {
-      const cur = state.values[f.id] || [];
-      setSel(f, cb.checked ? [...cur, o] : cur.filter(v => v !== o));
+  if (f.groups) {
+    groupNames(f).forEach(g => {
+      const inGroup = list.filter(o => groupOf(f, o) === g);
+      if (!inGroup.length) return;
+      const head = document.createElement("div");
+      head.className = "ghead";
+      const name = document.createElement("span"); name.textContent = `${g} (${inGroup.length})`;
+      const all = document.createElement("button");
+      all.type = "button"; all.className = "linkbtn";
+      const allOn = inGroup.every(o => sel.includes(o));
+      all.textContent = allOn ? "Clear group" : "Select group";
+      all.addEventListener("click", () => {
+        const cur = state.values[f.id] || [];
+        setSel(f, allOn ? cur.filter(v => !inGroup.includes(v)) : [...new Set([...cur, ...inGroup])]);
+      });
+      head.append(name, all);
+      box.append(head);
+      inGroup.forEach(o => box.append(optRow(f, o, sel, custom)));
     });
-    const t = document.createElement("span"); t.textContent = o;
-    lab.append(cb, t);
-    if (custom.includes(o) && !f.options.includes(o)) { const tg = document.createElement("span"); tg.className = "tag"; tg.textContent = "Custom"; lab.append(tg); }
-    box.append(lab);
-  });
+  } else {
+    list.forEach(o => box.append(optRow(f, o, sel, custom)));
+  }
   const typed = q.trim();
   if (typed && !optionsFor(f).some(o => o.toLowerCase() === typed.toLowerCase())) {
     const add = document.createElement("button");

@@ -79,8 +79,13 @@
       "label": "Page tag",
       "source": "Event page",
       "keepWhole": false,
+      "options": [
+        "AI and Tech",
+        "Startups",
+        "Legacy SMBs"
+      ],
       "values": [
-        "AI",
+        "AI and Tech",
         "",
         "",
         "",
@@ -191,6 +196,33 @@
       "label": "Audience - page words",
       "source": "Event page description",
       "keepWhole": false,
+      "groups": {
+        "Tech & AI": [
+          "Engineering leaders",
+          "Infrastructure leaders",
+          "AI builders",
+          "AI enthusiasts",
+          "Innovators",
+          "Women in tech"
+        ],
+        "Security": [
+          "Security professionals"
+        ],
+        "Growth companies": [
+          "Fast-growing companies"
+        ],
+        "Retail & wholesale": [
+          "Jewelry retailers",
+          "Wholesalers",
+          "Manufacturers"
+        ],
+        "Finance & investing": [
+          "Private equity executives",
+          "Investment bankers",
+          "Corporate development officers",
+          "Lenders"
+        ]
+      },
       "values": [
         "Engineering leaders, Infrastructure leaders, Fast-growing companies",
         "AI enthusiasts, Innovators, AI builders",
@@ -205,6 +237,23 @@
       "label": "Decision-maker titles",
       "source": "Notion description + Tags",
       "keepWhole": false,
+      "groups": {
+        "C-suite": [
+          "CEO",
+          "Co-CEO",
+          "CTO",
+          "C-Suite/Founders"
+        ],
+        "Founders & owners": [
+          "Founders",
+          "Co-founder",
+          "Owners"
+        ],
+        "VPs & managers": [
+          "VP Engineering",
+          "Managers"
+        ]
+      },
       "values": [
         "CTO, VP Engineering, C-Suite/Founders",
         "CTO, Co-founder",
@@ -233,6 +282,25 @@
       "label": "Company type in room",
       "source": "Event page description",
       "keepWhole": false,
+      "groups": {
+        "Startups & tech": [
+          "Startups",
+          "Fast-growing NYC companies",
+          "Startups and big tech"
+        ],
+        "Field & trade services": [
+          "Security integrators",
+          "Field-service businesses"
+        ],
+        "Retail & wholesale": [
+          "Retail chains and franchisees",
+          "Wholesale distributors"
+        ],
+        "Finance & investing": [
+          "Private equity firms",
+          "Investment banks"
+        ]
+      },
       "values": [
         "Fast-growing NYC companies",
         "Startups and big tech",
@@ -275,6 +343,42 @@
       "label": "Topics - page words",
       "source": "Event page description",
       "keepWhole": false,
+      "groups": {
+        "AI & agents": [
+          "Artificial intelligence",
+          "AI engineering",
+          "AI agents",
+          "Agent sandboxes",
+          "Multi-agent systems",
+          "Agent memory"
+        ],
+        "Building software with AI": [
+          "AI changing how software is written and shipped",
+          "Building with AI",
+          "Vibe coding"
+        ],
+        "Reliability & infrastructure": [
+          "Production reliability",
+          "Uptime",
+          "Incidents",
+          "Infrastructure"
+        ],
+        "Security": [
+          "Physical security",
+          "Cybersecurity",
+          "Digital trust and identity",
+          "Access control"
+        ],
+        "AI in business": [
+          "AI adoption",
+          "AI for portfolio companies",
+          "Measuring AI impact"
+        ],
+        "Retail & sourcing": [
+          "Jewelry trends",
+          "Jewelry sourcing and purchasing"
+        ]
+      },
       "values": [
         "Production reliability, AI changing how software is written and shipped, Uptime, Incidents, Infrastructure",
         "AI engineering, AI agents, Agent sandboxes, Multi-agent systems, Agent memory",
@@ -289,6 +393,30 @@
       "label": "Topics - Notion tags",
       "source": "Notion Tag 1/2/3 + Tags",
       "keepWhole": false,
+      "groups": {
+        "AI": [
+          "Applied AI",
+          "AI Agents",
+          "Enterprise AI"
+        ],
+        "Tech & engineering": [
+          "Tech",
+          "Engineering",
+          "Developer-Tools",
+          "Innovation"
+        ],
+        "Business & investing": [
+          "Business",
+          "eCommerce/GTM",
+          "VC/Investors"
+        ],
+        "Community": [
+          "Builders",
+          "C-Suite/Founders",
+          "Women in Tech",
+          "Networking"
+        ]
+      },
       "values": [
         "Engineering, Applied AI, C-Suite/Founders",
         "AI Agents, Developer-Tools, Builders",
@@ -303,6 +431,15 @@
       "label": "Pipeline theme match",
       "source": "Pipeline spec match (ADL analysis)",
       "keepWhole": false,
+      "groups": {
+        "Business": [
+          "Applied AI for business"
+        ],
+        "Engineering tooling": [
+          "Developer tooling",
+          "Infrastructure tooling"
+        ]
+      },
       "values": [
         "Applied AI for business, Developer tooling, Infrastructure tooling",
         "Developer tooling, Infrastructure tooling",

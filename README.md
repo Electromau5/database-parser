@@ -29,6 +29,8 @@ The page loads `data/event-metadata.json` with `fetch`, so it must be served ove
 - `categories`: each category, what it covers (`covers`) and how the parser uses it (`parserUse`), from the "Categories & Parser Rules" tab.
 - `fields`: each metadata field, with `values` (one string per event, in the same order as `events`), the `source` of each value, and `keepWhole`.
 
-The form turns a field's values into dropdown options by splitting them on commas. `keepWhole: true` keeps the comma as part of one value (for example `B2B Startup, Market A`).
+The form turns a field's values into dropdown options by splitting them on commas. `keepWhole: true` keeps the comma as part of one value (for example `B2B Startup, Market A`). A field with an `options` array uses exactly that list for its dropdown instead (for example, Page tag).
+
+A field with a `groups` object (category name → list of options) shows its dropdown in categories, with filter buttons and a "Select group" link for each one (for example, Audience - page words). Options not listed in any group, including custom ones, go under "Other".
 
 To add a field or event, edit the JSON and reload the page.
