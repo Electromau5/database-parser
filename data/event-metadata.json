@@ -98,6 +98,15 @@
       "label": "Day of week",
       "source": "Event page",
       "keepWhole": false,
+      "options": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
       "values": [
         "Tuesday",
         "Wednesday",
@@ -173,9 +182,35 @@
       "source": "Event page + Notion",
       "keepWhole": false,
       "groups": {
-        "NYC": [
+        "NYC - Manhattan": [
           "Lower East Side",
-          "Chelsea"
+          "Chelsea",
+          "NoMad",
+          "Midtown",
+          "Financial District / FiDi",
+          "Tribeca",
+          "SoHo",
+          "Flatiron",
+          "Hudson Yards",
+          "Meatpacking District",
+          "Harlem",
+          "Upper West Side",
+          "Upper East Side"
+        ],
+        "NYC - Brooklyn": [
+          "Williamsburg",
+          "DUMBO",
+          "Greenpoint",
+          "Bushwick",
+          "Bed-Stuy",
+          "Crown Heights",
+          "Downtown Brooklyn",
+          "Industry City",
+          "Sunset Park"
+        ],
+        "NYC - Queens": [
+          "Long Island City",
+          "Astoria"
         ],
         "NJ - Hudson County": [
           "Jersey City",
@@ -218,6 +253,10 @@
       "label": "Attendance mode",
       "source": "Inferred from venue + Google Maps embed on page",
       "keepWhole": false,
+      "extraOptions": [
+        "Virtual",
+        "Hybrid"
+      ],
       "values": [
         "In-person",
         "In-person",
@@ -232,6 +271,11 @@
       "label": "Location state",
       "source": "Event page / Notion",
       "keepWhole": false,
+      "extraOptions": [
+        "Sent to confirmed guests",
+        "Venue TBD / not named",
+        "Address given on registration"
+      ],
       "values": [
         "Published",
         "Released on approval",
@@ -271,6 +315,18 @@
           "Investment bankers",
           "Corporate development officers",
           "Lenders"
+        ],
+        "Owners & operators": [
+          "Small business owners",
+          "Entrepreneurs",
+          "Freelancers",
+          "Founders",
+          "Owners",
+          "Operators"
+        ],
+        "Executives & professionals": [
+          "Executives",
+          "Professionals"
         ]
       },
       "values": [
@@ -292,15 +348,26 @@
           "CEO",
           "Co-CEO",
           "CTO",
+          "CIO",
+          "CFO",
+          "COO",
+          "C-Suite",
           "C-Suite/Founders"
         ],
-        "Founders & owners": [
+        "Founders, owners & partners": [
           "Founders",
           "Co-founder",
-          "Owners"
+          "Owners",
+          "Partners"
         ],
-        "VPs & managers": [
+        "VPs, heads & managers": [
           "VP Engineering",
+          "VP Product",
+          "Vice President",
+          "Head of Engineering",
+          "Head of Product",
+          "Directors",
+          "GM / General Manager",
           "Managers"
         ]
       },
@@ -405,7 +472,10 @@
         "Building software with AI": [
           "AI changing how software is written and shipped",
           "Building with AI",
-          "Vibe coding"
+          "Vibe coding",
+          "Agentic coding",
+          "AI-native development",
+          "Dev tooling"
         ],
         "Reliability & infrastructure": [
           "Production reliability",
@@ -427,6 +497,10 @@
         "Retail & sourcing": [
           "Jewelry trends",
           "Jewelry sourcing and purchasing"
+        ],
+        "AI skills & ethics": [
+          "Prompt writing",
+          "Ethical AI"
         ]
       },
       "values": [
@@ -445,26 +519,64 @@
       "keepWhole": false,
       "groups": {
         "AI": [
+          "AI",
           "Applied AI",
           "AI Agents",
-          "Enterprise AI"
+          "Agents",
+          "Enterprise AI",
+          "Generative AI",
+          "Voice AI",
+          "Voice-AI",
+          "LLM Tools",
+          "LangChain"
         ],
         "Tech & engineering": [
           "Tech",
           "Engineering",
           "Developer-Tools",
-          "Innovation"
+          "Product Engineering",
+          "Innovation",
+          "Hackathon",
+          "Crypto"
+        ],
+        "Product & design": [
+          "Product",
+          "Product Strategy",
+          "UX",
+          "Design",
+          "Design-Tools",
+          "Creative Tech",
+          "Creative Tools"
         ],
         "Business & investing": [
           "Business",
+          "Startups",
+          "Scaling",
           "eCommerce/GTM",
-          "VC/Investors"
+          "GTM Strategy",
+          "DTC",
+          "Fashion",
+          "VC/Investors",
+          "Investors",
+          "Pitch"
         ],
         "Community": [
           "Builders",
           "C-Suite/Founders",
+          "Founders",
           "Women in Tech",
-          "Networking"
+          "Networking",
+          "Community",
+          "Social",
+          "Storytelling",
+          "Workshops"
+        ],
+        "Lifestyle": [
+          "Wellness",
+          "Fitness",
+          "Pickleball",
+          "Outdoors",
+          "Sports"
         ]
       },
       "values": [
@@ -504,6 +616,12 @@
       "label": "Pain - page words",
       "source": "Event page description",
       "keepWhole": false,
+      "extraOptions": [
+        "Bottleneck",
+        "Scaling pain",
+        "Work by hand / manual work",
+        "Time pressure (save time)"
+      ],
       "values": [
         "Production reliability, Uptime, Incidents",
         "Disposable agent runs, Production knowledge scattered",
@@ -532,6 +650,12 @@
       "label": "Buying signal",
       "source": "Event page description",
       "keepWhole": false,
+      "extraOptions": [
+        "Already experimenting with AI",
+        "Adopting AI",
+        "Hiring plans",
+        "Capital raised"
+      ],
       "values": [
         "Shipping software with AI, Discussing how AI changes their work",
         "Shipping software with AI",
@@ -546,6 +670,30 @@
       "label": "Format type",
       "source": "Event page (title + description)",
       "keepWhole": false,
+      "groups": {
+        "Meals": [
+          "Dinner",
+          "Breakfast",
+          "Lunch"
+        ],
+        "Social": [
+          "Meetup",
+          "Mixer"
+        ],
+        "Conferences & expos": [
+          "Conference",
+          "Summit",
+          "Trade show",
+          "Expo"
+        ],
+        "Sessions": [
+          "Panel discussion",
+          "Fireside chat",
+          "Roundtable",
+          "Workshop",
+          "Hackathon"
+        ]
+      },
       "values": [
         "Dinner",
         "Meetup",
@@ -560,6 +708,10 @@
       "label": "Group style",
       "source": "Event page description",
       "keepWhole": false,
+      "extraOptions": [
+        "Seated",
+        "Curated"
+      ],
       "values": [
         "Intimate, Small group",
         "Large group",
@@ -574,6 +726,9 @@
       "label": "Format rules - page words",
       "source": "Event page description",
       "keepWhole": false,
+      "extraOptions": [
+        "Honest conversations"
+      ],
       "values": [
         "No slides, No pitches, Candid conversation",
         "",
@@ -588,6 +743,9 @@
       "label": "Agenda",
       "source": "Event page",
       "keepWhole": false,
+      "extraOptions": [
+        "Curriculum / what you'll learn published"
+      ],
       "values": [
         "",
         "Timed agenda published",
@@ -602,6 +760,11 @@
       "label": "Registration type",
       "source": "Event page + Notion",
       "keepWhole": false,
+      "extraOptions": [
+        "Application-only",
+        "Waitlist",
+        "Sold out"
+      ],
       "values": [
         "Approval-only, Request to Join",
         "Approval-only, Request to Join",
@@ -630,6 +793,11 @@
       "label": "Call to action",
       "source": "Event page",
       "keepWhole": false,
+      "extraOptions": [
+        "Get Tickets",
+        "Reserve a spot",
+        "Apply"
+      ],
       "values": [
         "Request to Join",
         "Request to Join",
@@ -643,7 +811,12 @@
       "category": "Cost",
       "label": "Price",
       "source": "Hidden ticket data on page (General Admission: 0 USD)",
-      "keepWhole": true,
+      "keepWhole": false,
+      "options": [
+        "Free",
+        "Paid",
+        "Not published"
+      ],
       "values": [
         "$0, Free",
         "$0, Free",
@@ -658,6 +831,18 @@
       "label": "ADL Compatibility Score",
       "source": "Notion description",
       "keepWhole": false,
+      "options": [
+        "10/10",
+        "9/10",
+        "8/10",
+        "7/10",
+        "6/10",
+        "5/10",
+        "4/10",
+        "3/10",
+        "2/10",
+        "1/10"
+      ],
       "values": [
         "9/10",
         "8/10",
@@ -672,6 +857,18 @@
       "label": "Rank",
       "source": "Notion",
       "keepWhole": false,
+      "options": [
+        "Rank 1 of 10",
+        "Rank 2 of 10",
+        "Rank 3 of 10",
+        "Rank 4 of 10",
+        "Rank 5 of 10",
+        "Rank 6 of 10",
+        "Rank 7 of 10",
+        "Rank 8 of 10",
+        "Rank 9 of 10",
+        "Rank 10 of 10"
+      ],
       "values": [
         "Rank 1 of 10",
         "Rank 2 of 10",

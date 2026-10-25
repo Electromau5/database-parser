@@ -137,7 +137,7 @@ try {
   const data = await res.json();
   EVENTS = data.events;
   CATEGORIES = data.categories.map(c => [c.name, c.covers, c.parserUse]);
-  FIELDS = data.fields.map(f => [f.category, f.label, f.source, f.values, f.keepWhole, f.options, f.groups]);
+  FIELDS = data.fields.map(f => [f.category, f.label, f.source, f.values, f.keepWhole, f.options, f.groups, f.extraOptions]);
 } catch (err) {
   document.getElementById("form").innerHTML = "<section class=\"cat\"><h2>Couldn\u2019t load the event data</h2><p class=\"rule\">The form reads data/event-metadata.json, so it has to be served over HTTP. Run <code>./serve.sh</code> in the repo and open http://localhost:8787.</p></section>";
   throw err;
@@ -147,7 +147,7 @@ try {
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const split = (v, whole) => !v ? [] : whole ? [v.trim()] : v.split(",").map(s => s.trim()).filter(Boolean);
 
-const fieldDefs = FIELDS.map(([cat, label, source, vals, whole, fixed, groups]) => {
+const fieldDefs = FIELDS.map(([cat, label, source, vals, whole, fixed, groups, extra]) => {
   const perEvent = vals.map(v => split(v, whole));
   const options = [];
   // A field with a fixed `options` list uses it as-is; otherwise options come from the event values.
@@ -155,6 +155,8 @@ const fieldDefs = FIELDS.map(([cat, label, source, vals, whole, fixed, groups]) 
   else perEvent.forEach(list => list.forEach(o => { if (!options.includes(o)) options.push(o); }));
   // Options listed in `groups` are offered even when no event uses them yet.
   if (groups) Object.values(groups).flat().forEach(o => { if (!options.includes(o)) options.push(o); });
+  // `extraOptions` adds options on top of the ones taken from the event values.
+  if (extra) extra.forEach(o => { if (!options.includes(o)) options.push(o); });
   return { id: slug(cat + "-" + label), cat, label, source, perEvent, options, groups: groups || null };
 });
 
@@ -181,7 +183,12 @@ function load() {
 const form = document.getElementById("form");
 let openPanel = null;
 
-function optionsFor(f) { return [...f.options, ...(state.custom[f.id] || []).filter(o => !f.options.includes(o))]; }
+// Selected values always appear, so one that isn't a listed option (a typed amount, an old saved value) can still be unticked.
+function optionsFor(f) {
+  const out = [...f.options];
+  [...(state.custom[f.id] || []), ...(state.values[f.id] || [])].forEach(o => { if (!out.includes(o)) out.push(o); });
+  return out;
+}
 
 function buildForm() {
   form.innerHTML = "";
