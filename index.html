@@ -454,7 +454,10 @@ function fileName() { return (slug(state.name) || "event-metadata") + ".md"; }
 // ---- Download / copy -----------------------------------------------------
 let downloads; // undefined = still resolving, null = unavailable, "local" = plain file
 const dlBtn = document.getElementById("download");
-if (window.claude && typeof window.claude.use === "function") {
+// claude.ai's save prompt only exists when the page is framed inside claude.ai; a browser
+// extension can also define window.claude on a normal tab, so standalone pages always save directly.
+const inClaudeFrame = window.self !== window.top && window.claude && typeof window.claude.use === "function";
+if (inClaudeFrame) {
   window.claude.use("downloads").then(d => { downloads = d; if (!d) dlBtn.hidden = true; }).catch(() => { downloads = null; dlBtn.hidden = true; });
 } else {
   downloads = "local";
@@ -467,8 +470,8 @@ dlBtn.addEventListener("click", async () => {
     const a = document.createElement("a");
     a.href = url; a.download = fileName();
     document.body.append(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    flash("Downloaded " + fileName());
+    setTimeout(() => URL.revokeObjectURL(url), 60000); // Safari can still be reading the file after 1s
+    flash(`Saving ${fileName()}. If no file appears, your browser blocked it; use Copy Markdown.`);
     return;
   }
   if (!downloads) { flash("Downloads aren't available here. Use Copy Markdown instead.", true); return; }
