@@ -151,9 +151,59 @@
     },
     {
       "category": "Location",
+      "label": "Region",
+      "source": "Inferred from 'Gate checks passed' (NYC)",
+      "keepWhole": false,
+      "options": [
+        "NYC",
+        "NJ"
+      ],
+      "values": [
+        "NYC",
+        "NYC",
+        "NYC",
+        "NYC",
+        "NYC",
+        "NYC"
+      ]
+    },
+    {
+      "category": "Location",
       "label": "Neighbourhood",
       "source": "Event page + Notion",
       "keepWhole": false,
+      "groups": {
+        "NYC": [
+          "Lower East Side",
+          "Chelsea"
+        ],
+        "NJ - Hudson County": [
+          "Jersey City",
+          "Hoboken",
+          "Weehawken",
+          "Secaucus",
+          "Harrison"
+        ],
+        "NJ - North Jersey": [
+          "Newark",
+          "Fort Lee",
+          "Paramus",
+          "East Rutherford",
+          "Montclair",
+          "Morristown"
+        ],
+        "NJ - Central Jersey": [
+          "New Brunswick",
+          "Princeton",
+          "Edison",
+          "Red Bank"
+        ],
+        "NJ - South Jersey": [
+          "Atlantic City",
+          "Camden",
+          "Cherry Hill"
+        ]
+      },
       "values": [
         "Lower East Side",
         "",

@@ -153,6 +153,8 @@ const fieldDefs = FIELDS.map(([cat, label, source, vals, whole, fixed, groups]) 
   // A field with a fixed `options` list uses it as-is; otherwise options come from the event values.
   if (fixed) options.push(...fixed);
   else perEvent.forEach(list => list.forEach(o => { if (!options.includes(o)) options.push(o); }));
+  // Options listed in `groups` are offered even when no event uses them yet.
+  if (groups) Object.values(groups).flat().forEach(o => { if (!options.includes(o)) options.push(o); });
   return { id: slug(cat + "-" + label), cat, label, source, perEvent, options, groups: groups || null };
 });
 
