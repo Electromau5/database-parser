@@ -139,7 +139,7 @@
     {
       "category": "Date & Time",
       "label": "Duration",
-      "source": "Event page start and end times (per day for multi-day events)",
+      "source": "Event page start and end times (per day for multi-day events). Each range is min-max: 1-2 hrs = at least 1, at most 2",
       "keepWhole": true,
       "options": [
         "1-2 hrs",
