@@ -81,7 +81,6 @@ section.cat { background: var(--surface); border: 1px solid var(--line); border-
 .ghead:first-child { padding-top: 2px; }
 .ghead .linkbtn { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 0.75rem; }
 .empty-note { color: var(--muted); font-size: 0.8125rem; padding: 6px; }
-input.name { width: 100%; background: var(--bg); }
 aside.out { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; max-height: calc(100vh - 32px); }
 @media (max-width: 900px) { aside.out { position: static; max-height: none; } }
 .out-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
@@ -202,15 +201,6 @@ function buildForm() {
     if (use) { const b = document.createElement("b"); b.textContent = "Parser: "; rule.append(b, use); }
     const grid = sec.querySelector(".fields");
 
-    if (cat === "Identity") {
-      const wrap = document.createElement("div");
-      wrap.className = "field";
-      wrap.innerHTML = `<label class="lbl" for="event-name">Event name</label><span class="src">Title used as the Markdown heading and file name</span><input class="name" type="text" id="event-name" placeholder="e.g. Antimetal Dinner at Dirty French">`;
-      const inp = wrap.querySelector("input");
-      inp.value = state.name;
-      inp.addEventListener("input", () => { state.name = inp.value; changed(); });
-      grid.append(wrap);
-    }
     fieldDefs.filter(f => f.cat === cat).forEach(f => grid.append(buildField(f)));
     form.append(sec);
   });
@@ -404,7 +394,6 @@ function toMarkdown() {
   lines.push(`_Event metadata, exported ${new Date().toISOString().slice(0, 10)}_`);
   CATEGORIES.forEach(([cat]) => {
     const rows = [];
-    if (cat === "Identity" && (state.name.trim() || state.includeEmpty)) rows.push(`- **Event name:** ${state.name.trim() || "—"}`);
     fieldDefs.filter(f => f.cat === cat).forEach(f => {
       const v = state.values[f.id] || [];
       if (v.length) rows.push(`- **${f.label}:** ${v.join(", ")}`);

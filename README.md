@@ -18,7 +18,7 @@ The page loads `data/event-metadata.json` with `fetch`, so it must be served ove
 - **Start from:** loads one of the six events from the sheet into the form, or gives you a blank form.
 - **Dropdowns:** pick any number of values. To add your own, type it in the search box and press Enter.
 - **Include empty fields:** adds unfilled fields to the Markdown with `—` as the value.
-- **Download .md / Copy Markdown:** exports the result. The file is named after the event.
+- **Download .md / Copy Markdown:** exports the result. The heading and file name come from the event picked in **Start from** ("Untitled event" for a blank form).
 - **Autosave:** your work is saved in the browser (`localStorage`).
 
 ## Data file
