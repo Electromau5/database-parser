@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Event Metadata Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: form column of category sections on the left, sticky Markdown preview on the right; stacks at phone width. */
+:root {
+  --bg: #f5f6f4;
+  --surface: #ffffff;
+  --fg: #1c2321;
+  --muted: #5d6a66;
+  --line: #d9dfdc;
+  --accent: #0f6e63;
+  --accent-soft: #e2f1ee;
+  --accent-fg: #ffffff;
+  --code-bg: #eef1ef;
+  --danger: #a33a2a;
+  --font-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --radius: 8px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 14px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 48px; }
+header.top { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between; margin-bottom: 20px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1.15; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); margin: 4px 0 0; max-width: 62ch; }
+.loader { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.loader label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+select, input[type="text"] { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; min-width: 0; }
+select:focus-visible, input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn { font: inherit; font-weight: 600; border-radius: 6px; padding: 7px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.btn.ghost { background: transparent; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+form { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+section.cat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px 18px; min-width: 0; }
+.cat h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin: 0; }
+.cat .rule { color: var(--muted); font-size: 0.8125rem; margin: 2px 0 14px; max-width: 70ch; }
+.cat .rule b { color: var(--fg); font-weight: 600; }
+.fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px 18px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; position: relative; }
+.field > .lbl { font-weight: 600; font-size: 0.875rem; }
+.field > .src { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.01em; }
+.trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; text-align: left; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; cursor: pointer; }
+.trigger:hover { border-color: var(--accent); }
+.trigger .ph { color: var(--muted); }
+.trigger .count { font-family: var(--font-mono); font-size: 0.75rem; background: var(--accent); color: var(--accent-fg); border-radius: 999px; padding: 0 7px; }
+.caret { width: 10px; height: 10px; flex: none; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translate(-2px, -2px); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips:empty { display: none; }
+.chip { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-soft); color: var(--fg); border-radius: 999px; padding: 2px 4px 2px 10px; font-size: 0.8125rem; max-width: 100%; }
+.chip span { overflow-wrap: anywhere; }
+.chip button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0 5px; border-radius: 999px; }
+.chip button:hover { color: var(--danger); }
+.panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 10px 28px rgb(0 0 0 / 0.16); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.panel input[type="text"] { width: 100%; }
+.opts { max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; }
+.opt { display: flex; align-items: flex-start; gap: 8px; padding: 6px 6px; border-radius: 5px; cursor: pointer; }
+.opt:hover { background: var(--accent-soft); }
+.opt input { accent-color: var(--accent); margin-top: 3px; }
+.opt .tag { margin-left: auto; font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; padding-top: 2px; }
+.add { text-align: left; font: inherit; border: 1px dashed var(--accent); color: var(--accent); background: transparent; border-radius: 5px; padding: 6px 8px; cursor: pointer; }
+.panel-foot { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); padding-top: 6px; }
+.linkbtn { border: 0; background: none; font: inherit; font-size: 0.8125rem; color: var(--accent); cursor: pointer; padding: 2px 4px; }
+.empty-note { color: var(--muted); font-size: 0.8125rem; padding: 6px; }
+input.name { width: 100%; background: var(--bg); }
+aside.out { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; max-height: calc(100vh - 32px); }
+@media (max-width: 900px) { aside.out { position: static; max-height: none; } }
+.out-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.out-head h2 { font-family: var(--font-display); font-size: 1.05rem; margin: 0; }
+.stat { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.toggle { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--muted); }
+.toggle input { accent-color: var(--accent); }
+pre.md { margin: 0; background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; padding: 12px; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; overflow-y: auto; min-height: 200px; flex: 1; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.status { font-size: 0.8125rem; color: var(--accent); min-height: 1.2em; margin: 0; }
+.status.err { color: var(--danger); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Event Metadata Form</h1>
+      <p class="sub">Fields and options come from the <i>Event_Metadata_by_Category</i> sheet. Pick one or more values for each field, or add your own, then export the result as Markdown.</p>
+    </div>
+    <div class="loader">
+      <label for="prefill">Start from</label>
+      <select id="prefill"></select>
+      <button type="button" class="btn ghost" id="clearAll">Clear all</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <form id="form" autocomplete="off"></form>
+    <aside class="out" aria-label="Markdown export">
+      <div class="out-head">
+        <h2>Markdown</h2>
+        <span class="stat" id="stat"></span>
+      </div>
+      <label class="toggle"><input type="checkbox" id="includeEmpty"> Include empty fields</label>
+      <pre class="md" id="md" tabindex="0"></pre>
+      <div class="actions">
+        <button type="button" class="btn primary" id="download">Download .md</button>
+        <button type="button" class="btn" id="copy">Copy Markdown</button>
+      </div>
+      <p class="status" id="status" role="status"></p>
+    </aside>
+  </div>
+</div>
+
+<script type="module">
+// ---- Data: loaded from data/event-metadata.json --------------------------
+let EVENTS, CATEGORIES, FIELDS;
+try {
+  const res = await fetch("data/event-metadata.json", { cache: "no-cache" });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const data = await res.json();
+  EVENTS = data.events;
+  CATEGORIES = data.categories.map(c => [c.name, c.covers, c.parserUse]);
+  FIELDS = data.fields.map(f => [f.category, f.label, f.source, f.values, f.keepWhole]);
+} catch (err) {
+  document.getElementById("form").innerHTML = "<section class=\"cat\"><h2>Couldn\u2019t load the event data</h2><p class=\"rule\">The form reads data/event-metadata.json, so it has to be served over HTTP. Run <code>./serve.sh</code> in the repo and open http://localhost:8787.</p></section>";
+  throw err;
+}
+
+// ---- Model ---------------------------------------------------------------
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const split = (v, whole) => !v ? [] : whole ? [v.trim()] : v.split(",").map(s => s.trim()).filter(Boolean);
+
+const fieldDefs = FIELDS.map(([cat, label, source, vals, whole]) => {
+  const perEvent = vals.map(v => split(v, whole));
+  const options = [];
+  perEvent.forEach(list => list.forEach(o => { if (!options.includes(o)) options.push(o); }));
+  return { id: slug(cat + "-" + label), cat, label, source, perEvent, options };
+});
+
+const STORE_KEY = "event-metadata-form-v1";
+let state = { name: "", values: {}, custom: {}, includeEmpty: false, prefill: "0" };
+
+function prefillFrom(i) {
+  state.values = {};
+  if (i === "" || i == null) { state.name = ""; return; }
+  state.name = EVENTS[i];
+  fieldDefs.forEach(f => { state.values[f.id] = [...f.perEvent[i]]; });
+}
+
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) { const s = JSON.parse(raw); if (s && s.values) { state = Object.assign(state, s); return; } }
+  } catch (e) {}
+  prefillFrom(0);
+}
+
+// ---- Rendering -----------------------------------------------------------
+const form = document.getElementById("form");
+let openPanel = null;
+
+function optionsFor(f) { return [...f.options, ...(state.custom[f.id] || []).filter(o => !f.options.includes(o))]; }
+
+function buildForm() {
+  form.innerHTML = "";
+  CATEGORIES.forEach(([cat, covers, use]) => {
+    const sec = document.createElement("section");
+    sec.className = "cat";
+    sec.innerHTML = `<h2></h2><p class="rule"></p><div class="fields"></div>`;
+    sec.querySelector("h2").textContent = cat;
+    const rule = sec.querySelector(".rule");
+    rule.textContent = covers + " ";
+    if (use) { const b = document.createElement("b"); b.textContent = "Parser: "; rule.append(b, use); }
+    const grid = sec.querySelector(".fields");
+
+    if (cat === "Identity") {
+      const wrap = document.createElement("div");
+      wrap.className = "field";
+      wrap.innerHTML = `<label class="lbl" for="event-name">Event name</label><span class="src">Title used as the Markdown heading and file name</span><input class="name" type="text" id="event-name" placeholder="e.g. Antimetal Dinner at Dirty French">`;
+      const inp = wrap.querySelector("input");
+      inp.value = state.name;
+      inp.addEventListener("input", () => { state.name = inp.value; changed(); });
+      grid.append(wrap);
+    }
+    fieldDefs.filter(f => f.cat === cat).forEach(f => grid.append(buildField(f)));
+    form.append(sec);
+  });
+}
+
+function buildField(f) {
+  const el = document.createElement("div");
+  el.className = "field";
+  el.dataset.id = f.id;
+  el.innerHTML = `<span class="lbl" id="lbl-${f.id}"></span><span class="src"></span>
+    <button type="button" class="trigger" id="trg-${f.id}" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="lbl-${f.id} trg-${f.id}"><span class="txt"></span><span class="caret" aria-hidden="true"></span></button>
+    <div class="chips"></div>`;
+  el.querySelector(".lbl").textContent = f.label;
+  el.querySelector(".src").textContent = "Source: " + f.source;
+  el.querySelector(".trigger").addEventListener("click", e => { e.stopPropagation(); togglePanel(f, el); });
+  renderField(f, el);
+  return el;
+}
+
+function renderField(f, el) {
+  const sel = state.values[f.id] || [];
+  const txt = el.querySelector(".txt");
+  txt.innerHTML = "";
+  if (!sel.length) { const s = document.createElement("span"); s.className = "ph"; s.textContent = "Select values…"; txt.append(s); }
+  else { const c = document.createElement("span"); c.className = "count"; c.textContent = sel.length + " selected"; txt.append(c); }
+  const chips = el.querySelector(".chips");
+  chips.innerHTML = "";
+  sel.forEach(v => {
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    const t = document.createElement("span"); t.textContent = v;
+    const x = document.createElement("button"); x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", "Remove " + v);
+    x.addEventListener("click", () => { setSel(f, sel.filter(s => s !== v)); });
+    chip.append(t, x); chips.append(chip);
+  });
+}
+
+function setSel(f, list) {
+  state.values[f.id] = list;
+  const el = form.querySelector(`.field[data-id="${f.id}"]`);
+  renderField(f, el);
+  if (openPanel && openPanel.f === f) renderOpts(openPanel);
+  changed();
+}
+
+function togglePanel(f, el) {
+  const same = openPanel && openPanel.f === f;
+  closePanel();
+  if (same) return;
+  const panel = document.createElement("div");
+  panel.className = "panel";
+  panel.innerHTML = `<input type="text" id="search-${f.id}" placeholder="Search or type a new value" aria-label="Search ${f.label}"><div class="opts" role="listbox" aria-multiselectable="true"></div>
+    <div class="panel-foot"><button type="button" class="linkbtn" data-a="all">Select all</button><button type="button" class="linkbtn" data-a="none">Clear</button><button type="button" class="linkbtn" data-a="done">Done</button></div>`;
+  panel.addEventListener("click", e => e.stopPropagation());
+  el.append(panel);
+  el.querySelector(".trigger").setAttribute("aria-expanded", "true");
+  openPanel = { f, el, panel };
+  const search = panel.querySelector("input");
+  search.addEventListener("input", () => renderOpts(openPanel));
+  search.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); addCustom(f, search.value); }
+  });
+  panel.querySelector('[data-a="all"]').addEventListener("click", () => setSel(f, [...new Set([...(state.values[f.id] || []), ...visibleOpts(f, search.value)])]));
+  panel.querySelector('[data-a="none"]').addEventListener("click", () => setSel(f, []));
+  panel.querySelector('[data-a="done"]').addEventListener("click", () => { closePanel(); el.querySelector(".trigger").focus(); });
+  renderOpts(openPanel);
+  search.focus();
+}
+
+function visibleOpts(f, q) {
+  q = (q || "").trim().toLowerCase();
+  return optionsFor(f).filter(o => !q || o.toLowerCase().includes(q));
+}
+
+function renderOpts({ f, panel }) {
+  const q = panel.querySelector("input").value;
+  const box = panel.querySelector(".opts");
+  box.innerHTML = "";
+  const sel = state.values[f.id] || [];
+  const list = visibleOpts(f, q);
+  const custom = state.custom[f.id] || [];
+  list.forEach((o, i) => {
+    const lab = document.createElement("label");
+    lab.className = "opt";
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = sel.includes(o); cb.id = `opt-${f.id}-${i}`;
+    cb.addEventListener("change", () => {
+      const cur = state.values[f.id] || [];
+      setSel(f, cb.checked ? [...cur, o] : cur.filter(v => v !== o));
+    });
+    const t = document.createElement("span"); t.textContent = o;
+    lab.append(cb, t);
+    if (custom.includes(o) && !f.options.includes(o)) { const tg = document.createElement("span"); tg.className = "tag"; tg.textContent = "Custom"; lab.append(tg); }
+    box.append(lab);
+  });
+  const typed = q.trim();
+  if (typed && !optionsFor(f).some(o => o.toLowerCase() === typed.toLowerCase())) {
+    const add = document.createElement("button");
+    add.type = "button"; add.className = "add";
+    add.textContent = `+ Add "${typed}"`;
+    add.addEventListener("click", () => addCustom(f, typed));
+    box.append(add);
+  } else if (!list.length) {
+    const n = document.createElement("div"); n.className = "empty-note"; n.textContent = "No values yet. Type one to add it.";
+    box.append(n);
+  }
+}
+
+function addCustom(f, v) {
+  v = (v || "").trim();
+  if (!v) return;
+  const existing = optionsFor(f).find(o => o.toLowerCase() === v.toLowerCase());
+  if (!existing) state.custom[f.id] = [...(state.custom[f.id] || []), v];
+  const val = existing || v;
+  const cur = state.values[f.id] || [];
+  openPanel.panel.querySelector("input").value = "";
+  setSel(f, cur.includes(val) ? cur : [...cur, val]);
+}
+
+function closePanel() {
+  if (!openPanel) return;
+  openPanel.panel.remove();
+  openPanel.el.querySelector(".trigger").setAttribute("aria-expanded", "false");
+  openPanel = null;
+}
+document.addEventListener("click", closePanel);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && openPanel) { const t = openPanel.el.querySelector(".trigger"); closePanel(); t.focus(); }
+});
+
+// ---- Markdown ------------------------------------------------------------
+function toMarkdown() {
+  const lines = [];
+  const name = state.name.trim() || "Untitled event";
+  lines.push(`# ${name}`, "");
+  lines.push(`_Event metadata, exported ${new Date().toISOString().slice(0, 10)}_`);
+  CATEGORIES.forEach(([cat]) => {
+    const rows = [];
+    if (cat === "Identity" && (state.name.trim() || state.includeEmpty)) rows.push(`- **Event name:** ${state.name.trim() || "—"}`);
+    fieldDefs.filter(f => f.cat === cat).forEach(f => {
+      const v = state.values[f.id] || [];
+      if (v.length) rows.push(`- **${f.label}:** ${v.join(", ")}`);
+      else if (state.includeEmpty) rows.push(`- **${f.label}:** —`);
+    });
+    if (rows.length) lines.push("", `## ${cat}`, "", ...rows);
+  });
+  return lines.join("\n") + "\n";
+}
+
+const mdEl = document.getElementById("md");
+const statEl = document.getElementById("stat");
+const statusEl = document.getElementById("status");
+
+function changed() {
+  mdEl.textContent = toMarkdown();
+  const filled = fieldDefs.filter(f => (state.values[f.id] || []).length).length;
+  statEl.textContent = `${filled}/${fieldDefs.length} fields filled`;
+  save();
+}
+
+function flash(msg, err) {
+  statusEl.textContent = msg;
+  statusEl.classList.toggle("err", !!err);
+  clearTimeout(flash.t);
+  flash.t = setTimeout(() => { statusEl.textContent = ""; }, 4000);
+}
+
+function fileName() { return (slug(state.name) || "event-metadata") + ".md"; }
+
+// ---- Download / copy -----------------------------------------------------
+let downloads; // undefined = still resolving, null = unavailable, "local" = plain file
+const dlBtn = document.getElementById("download");
+if (window.claude && typeof window.claude.use === "function") {
+  window.claude.use("downloads").then(d => { downloads = d; if (!d) dlBtn.hidden = true; }).catch(() => { downloads = null; dlBtn.hidden = true; });
+} else {
+  downloads = "local";
+}
+
+dlBtn.addEventListener("click", async () => {
+  const md = toMarkdown();
+  if (downloads === "local") {
+    const url = URL.createObjectURL(new Blob([md], { type: "text/markdown" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = fileName();
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    flash("Downloaded " + fileName());
+    return;
+  }
+  if (!downloads) { flash("Downloads aren't available here. Use Copy Markdown instead.", true); return; }
+  try {
+    await downloads.save({ filename: fileName(), data: md });
+    flash("Saved " + fileName());
+  } catch (e) {
+    if (e && e.code === "declined") flash("Download cancelled.");
+    else if (e && e.code === "rate_limited") flash("A save prompt is already open. Try again in a moment.", true);
+    else flash("Couldn't save the file. Use Copy Markdown instead.", true);
+  }
+});
+
+document.getElementById("copy").addEventListener("click", () => {
+  const md = toMarkdown();
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents(mdEl);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    flash("Copy was blocked. The Markdown is selected; press Ctrl/Cmd+C.", true);
+  };
+  try {
+    navigator.clipboard.writeText(md).then(() => flash("Copied to clipboard"), fallback);
+  } catch (e) { fallback(); }
+});
+
+// ---- Controls ------------------------------------------------------------
+const prefillSel = document.getElementById("prefill");
+prefillSel.innerHTML = `<option value="">Blank form</option>` + EVENTS.map((e, i) => `<option value="${i}">${e}</option>`).join("");
+prefillSel.addEventListener("change", () => {
+  state.prefill = prefillSel.value;
+  prefillFrom(prefillSel.value === "" ? "" : Number(prefillSel.value));
+  closePanel(); buildForm(); changed();
+});
+document.getElementById("clearAll").addEventListener("click", () => {
+  state.prefill = ""; prefillSel.value = "";
+  prefillFrom(""); closePanel(); buildForm(); changed();
+});
+const incl = document.getElementById("includeEmpty");
+incl.addEventListener("change", () => { state.includeEmpty = incl.checked; changed(); });
+
+load();
+prefillSel.value = state.prefill ?? "";
+incl.checked = !!state.includeEmpty;
+buildForm();
+changed();
+</script>
+</body>
+</html>

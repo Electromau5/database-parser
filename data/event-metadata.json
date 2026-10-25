@@ -1,0 +1,554 @@
+{
+  "source": {
+    "title": "Event_Metadata_by_Category (from XLSX)",
+    "url": "https://docs.google.com/spreadsheets/d/1kZ9uqWm6YNgEIsRWAnnqGoLi7fiEe1gkal1egA67k5g"
+  },
+  "events": [
+    "Antimetal Dinner at Dirty French",
+    "Daytona AI Builders",
+    "ISC East 2026",
+    "Build with AI Meetup",
+    "JA New York Fall 2026",
+    "ACG NY DealMaker Fall"
+  ],
+  "categories": [
+    {
+      "name": "Identity",
+      "covers": "What the event is called and how it is told apart from every other event.",
+      "parserUse": "Title, slug - dedupe and matching."
+    },
+    {
+      "name": "Date & Time",
+      "covers": "When it runs.",
+      "parserUse": "Window gate (today to today+6, ET); clash detection."
+    },
+    {
+      "name": "Location",
+      "covers": "Where it runs and whether it is really in-person in NYC.",
+      "parserUse": "NYC gate; in-person gate."
+    },
+    {
+      "name": "Audience & Decision Makers",
+      "covers": "Who is in the room - page words kept apart from inferred titles.",
+      "parserUse": "Audience gate - the biggest lead-quality driver."
+    },
+    {
+      "name": "Market / Track Fit",
+      "covers": "Which of ADL's two client tracks it fits, and whether it passes the hard gates.",
+      "parserUse": "Track routing; gate pass/fail before scoring."
+    },
+    {
+      "name": "Topics & Themes",
+      "covers": "What it is about.",
+      "parserUse": "Search page text against the pipeline theme lists."
+    },
+    {
+      "name": "Pain Points & Buying Signals",
+      "covers": "What problem the room is talking about - page pain kept apart from ADL-inferred pain.",
+      "parserUse": "Pain scoring, with an audit trail."
+    },
+    {
+      "name": "Event Format",
+      "covers": "How the room works - dinner, breakfast, mixer, expo.",
+      "parserUse": "Format quality weighting."
+    },
+    {
+      "name": "Registration & Access",
+      "covers": "How you get in, and what cannot be read without acting.",
+      "parserUse": "Apply-early actions; honest 'unknown' fields."
+    },
+    {
+      "name": "Cost",
+      "covers": "What it costs.",
+      "parserUse": "Cost field; free vs paid filter."
+    },
+    {
+      "name": "ADL Scoring & Strategic Fit",
+      "covers": "ADL's own score, rank, goals served, and calendar routing.",
+      "parserUse": "Ranking output - always read score + rank together."
+    },
+    {
+      "name": "Speakers & Sponsors",
+      "covers": "Who is speaking and who is backing the event.",
+      "parserUse": ""
+    }
+  ],
+  "fields": [
+    {
+      "category": "Identity",
+      "label": "Page tag",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "AI",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "category": "Date & Time",
+      "label": "Day of week",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "Tuesday",
+        "Wednesday",
+        "Tuesday",
+        "Tuesday",
+        "Sunday",
+        "Tuesday"
+      ]
+    },
+    {
+      "category": "Date & Time",
+      "label": "Start time",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "7:00 PM ET",
+        "5:30 PM ET",
+        "10:00 AM ET",
+        "6:30 PM ET",
+        "9:00 AM ET",
+        "6:00 PM ET"
+      ]
+    },
+    {
+      "category": "Date & Time",
+      "label": "End time",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "9:30 PM ET",
+        "8:30 PM ET",
+        "4:00 PM ET",
+        "8:30 PM ET",
+        "5:00 PM ET",
+        "8:00 PM ET"
+      ]
+    },
+    {
+      "category": "Date & Time",
+      "label": "Event span",
+      "source": "Event page + Notion dates",
+      "keepWhole": false,
+      "values": [
+        "Single-day",
+        "Single-day",
+        "Multi-day",
+        "Single-day",
+        "Multi-day",
+        "Single-day"
+      ]
+    },
+    {
+      "category": "Location",
+      "label": "Neighbourhood",
+      "source": "Event page + Notion",
+      "keepWhole": false,
+      "values": [
+        "Lower East Side",
+        "",
+        "",
+        "Chelsea",
+        "",
+        ""
+      ]
+    },
+    {
+      "category": "Location",
+      "label": "Attendance mode",
+      "source": "Inferred from venue + Google Maps embed on page",
+      "keepWhole": false,
+      "values": [
+        "In-person",
+        "In-person",
+        "In-person",
+        "In-person",
+        "In-person",
+        "In-person"
+      ]
+    },
+    {
+      "category": "Location",
+      "label": "Location state",
+      "source": "Event page / Notion",
+      "keepWhole": false,
+      "values": [
+        "Published",
+        "Released on approval",
+        "Published",
+        "Published",
+        "Published",
+        "Published"
+      ]
+    },
+    {
+      "category": "Audience & Decision Makers",
+      "label": "Audience - page words",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "Engineering leaders, Infrastructure leaders, Fast-growing companies",
+        "AI enthusiasts, Innovators, AI builders",
+        "Security professionals",
+        "Women in tech, AI builders",
+        "Jewelry retailers, Wholesalers, Manufacturers",
+        "Private equity executives, Investment bankers, Corporate development officers, Lenders"
+      ]
+    },
+    {
+      "category": "Audience & Decision Makers",
+      "label": "Decision-maker titles",
+      "source": "Notion description + Tags",
+      "keepWhole": false,
+      "values": [
+        "CTO, VP Engineering, C-Suite/Founders",
+        "CTO, Co-founder",
+        "",
+        "Founders, Managers",
+        "Owners",
+        "CEO, Co-CEO"
+      ]
+    },
+    {
+      "category": "Audience & Decision Makers",
+      "label": "Seniority",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "Leader-level",
+        "Mixed",
+        "",
+        "Mid-to-senior-level",
+        "Owner-level",
+        "Executive-level"
+      ]
+    },
+    {
+      "category": "Audience & Decision Makers",
+      "label": "Company type in room",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "Fast-growing NYC companies",
+        "Startups and big tech",
+        "Security integrators, Field-service businesses",
+        "Startups",
+        "Retail chains and franchisees, Wholesale distributors",
+        "Private equity firms, Investment banks"
+      ]
+    },
+    {
+      "category": "Market / Track Fit",
+      "label": "Market / track",
+      "source": "Notion description",
+      "keepWhole": true,
+      "values": [
+        "B2B Startup, Market A",
+        "B2B Startup, Market A",
+        "Legacy SMB, Market B",
+        "B2B Startup, Market A",
+        "Legacy SMB, Market B",
+        "Both"
+      ]
+    },
+    {
+      "category": "Market / Track Fit",
+      "label": "Gate checks passed",
+      "source": "ADL analysis of page",
+      "keepWhole": false,
+      "values": [
+        "B2B audience, In-person, NYC, Not consumer/B2C, Not virtual-only, Not a regulated vertical",
+        "B2B audience, In-person, NYC, Not consumer/B2C, Not virtual-only, Not a regulated vertical",
+        "B2B audience, In-person, NYC, Not consumer/B2C, Not virtual-only, Not a regulated vertical",
+        "B2B audience, In-person, NYC, Not consumer/B2C, Not virtual-only, Not a regulated vertical",
+        "B2B audience, In-person, NYC, Not consumer/B2C, Not virtual-only, Not a regulated vertical",
+        "B2B audience, In-person, NYC, Not consumer/B2C, Not virtual-only"
+      ]
+    },
+    {
+      "category": "Topics & Themes",
+      "label": "Topics - page words",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "Production reliability, AI changing how software is written and shipped, Uptime, Incidents, Infrastructure",
+        "AI engineering, AI agents, Agent sandboxes, Multi-agent systems, Agent memory",
+        "Physical security, Cybersecurity, Digital trust and identity, Artificial intelligence, Access control",
+        "Building with AI, Vibe coding",
+        "Jewelry trends, Jewelry sourcing and purchasing",
+        "AI for portfolio companies, Measuring AI impact, AI adoption"
+      ]
+    },
+    {
+      "category": "Topics & Themes",
+      "label": "Topics - Notion tags",
+      "source": "Notion Tag 1/2/3 + Tags",
+      "keepWhole": false,
+      "values": [
+        "Engineering, Applied AI, C-Suite/Founders",
+        "AI Agents, Developer-Tools, Builders",
+        "Business, Tech, Innovation",
+        "Applied AI, Women in Tech, Builders",
+        "Business, eCommerce/GTM, Networking",
+        "VC/Investors, Business, Enterprise AI"
+      ]
+    },
+    {
+      "category": "Topics & Themes",
+      "label": "Pipeline theme match",
+      "source": "Pipeline spec match (ADL analysis)",
+      "keepWhole": false,
+      "values": [
+        "Applied AI for business, Developer tooling, Infrastructure tooling",
+        "Developer tooling, Infrastructure tooling",
+        "",
+        "Applied AI for business",
+        "",
+        "Applied AI for business"
+      ]
+    },
+    {
+      "category": "Pain Points & Buying Signals",
+      "label": "Pain - page words",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "Production reliability, Uptime, Incidents",
+        "Disposable agent runs, Production knowledge scattered",
+        "",
+        "AI overwhelm",
+        "Aged inventory",
+        "Fragmented operational data"
+      ]
+    },
+    {
+      "category": "Pain Points & Buying Signals",
+      "label": "Pain - ADL inferred",
+      "source": "Notion strategic fit (ADL analysis, NOT on the page)",
+      "keepWhole": false,
+      "values": [
+        "AI-generated code turning unmaintainable, UI drift, Design-code rework",
+        "AI-generated code turning unmaintainable",
+        "Manual dispatch and scheduling, Manual invoicing",
+        "",
+        "Manual inventory, Manual ordering, Manual invoicing",
+        "Inconsistent systems across portfolio companies"
+      ]
+    },
+    {
+      "category": "Pain Points & Buying Signals",
+      "label": "Buying signal",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "Shipping software with AI, Discussing how AI changes their work",
+        "Shipping software with AI",
+        "High attendee buying power",
+        "Actively building with AI",
+        "Purchasing intent",
+        "Evaluating AI tools for portfolio companies"
+      ]
+    },
+    {
+      "category": "Event Format",
+      "label": "Format type",
+      "source": "Event page (title + description)",
+      "keepWhole": false,
+      "values": [
+        "Dinner",
+        "Meetup",
+        "Trade show",
+        "Meetup",
+        "Trade show",
+        "Panel discussion"
+      ]
+    },
+    {
+      "category": "Event Format",
+      "label": "Group style",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "Intimate, Small group",
+        "Large group",
+        "Trade show floor",
+        "Casual mixer",
+        "Trade show floor",
+        "Intimate"
+      ]
+    },
+    {
+      "category": "Event Format",
+      "label": "Format rules - page words",
+      "source": "Event page description",
+      "keepWhole": false,
+      "values": [
+        "No slides, No pitches, Candid conversation",
+        "",
+        "Expert-led education, Hands-on experiences",
+        "Conversational, No formal agenda",
+        "",
+        "Peer-to-peer discussion"
+      ]
+    },
+    {
+      "category": "Event Format",
+      "label": "Agenda",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "",
+        "Timed agenda published",
+        "Multi-day schedule published",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "category": "Registration & Access",
+      "label": "Registration type",
+      "source": "Event page + Notion",
+      "keepWhole": false,
+      "values": [
+        "Approval-only, Request to Join",
+        "Approval-only, Request to Join",
+        "Open",
+        "Open",
+        "Approval-only",
+        "Open, Profile-restricted"
+      ]
+    },
+    {
+      "category": "Registration & Access",
+      "label": "Approval required",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "Yes",
+        "Yes",
+        "No",
+        "No",
+        "Yes",
+        "No"
+      ]
+    },
+    {
+      "category": "Registration & Access",
+      "label": "Call to action",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "Request to Join",
+        "Request to Join",
+        "Register",
+        "Register",
+        "",
+        "Register"
+      ]
+    },
+    {
+      "category": "Cost",
+      "label": "Price",
+      "source": "Hidden ticket data on page (General Admission: 0 USD)",
+      "keepWhole": true,
+      "values": [
+        "$0, Free",
+        "$0, Free",
+        "Not published",
+        "$0, Free",
+        "Not published",
+        "$275, Paid"
+      ]
+    },
+    {
+      "category": "ADL Scoring & Strategic Fit",
+      "label": "ADL Compatibility Score",
+      "source": "Notion description",
+      "keepWhole": false,
+      "values": [
+        "9/10",
+        "8/10",
+        "7/10",
+        "7/10",
+        "7/10",
+        "7/10"
+      ]
+    },
+    {
+      "category": "ADL Scoring & Strategic Fit",
+      "label": "Rank",
+      "source": "Notion",
+      "keepWhole": false,
+      "values": [
+        "Rank 1 of 10",
+        "Rank 2 of 10",
+        "Rank 2 of 10",
+        "Rank 3 of 10",
+        "Rank 5 of 10",
+        "Rank 3 of 10"
+      ]
+    },
+    {
+      "category": "ADL Scoring & Strategic Fit",
+      "label": "Strategic goals served",
+      "source": "Notion description",
+      "keepWhole": false,
+      "values": [
+        "Goal 1 Client Acquisition, Goal 2 Peer Networking, Goal 4 Talent & Advisor Pipeline",
+        "Goal 1 Client Acquisition, Goal 2 Peer Networking, Goal 4 Talent & Advisor Pipeline",
+        "Goal 1 Client Acquisition, Goal 2 Peer Networking",
+        "Goal 2 Peer Networking, Goal 4 Talent & Advisor Pipeline",
+        "Goal 1 Client Acquisition, Goal 2 Peer Networking",
+        "Goal 3 Investor Networking, Goal 1 Client Acquisition"
+      ]
+    },
+    {
+      "category": "ADL Scoring & Strategic Fit",
+      "label": "Calendar target",
+      "source": "Pipeline spec for B2B Startup track",
+      "keepWhole": false,
+      "values": [
+        "Tech Events, Google Calendar",
+        "Tech Events, Google Calendar",
+        "Legacy SMB Events, Google Calendar",
+        "Tech Events, Google Calendar",
+        "Legacy SMB Events, Google Calendar",
+        "Legacy SMB Events, Google Calendar"
+      ]
+    },
+    {
+      "category": "Speakers & Sponsors",
+      "label": "Speakers",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "",
+        "Marijan Cipcic, Muhammad Annas Hashmi, Sam Farber, Shreyas Iyer, Kaelyn Chresfield, Chase Erickson",
+        "",
+        "",
+        "",
+        "Abilash Jaikumar, John Nives, Ariail Barker, Andrew Brooks, Nitin Kumar, Jason Perloth, Bernd Strenitz"
+      ]
+    },
+    {
+      "category": "Speakers & Sponsors",
+      "label": "Sponsors / partners",
+      "source": "Event page",
+      "keepWhole": false,
+      "values": [
+        "",
+        "AWS, Antimetal",
+        "SIA, ASIS NYC",
+        "",
+        "",
+        ""
+      ]
+    }
+  ]
+}
